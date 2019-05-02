@@ -90,6 +90,24 @@ public final class DebouncingObservable<Value>: Observable<Value> {
     }
 }
 
+#if os(iOS)
+import UIKit
+
+public final class ActionObserver<T: UIControl>: Observable<T> {
+    public init(source: T, event: UIControl.Event) {
+        super.init()
+
+        source.addTarget(self, action: #selector(action(_:)), for: event)
+    }
+
+    @objc func action(_ sender: Any) {
+        if let sender = sender as? T {
+            super.next(sender)
+        }
+    }
+}
+#endif
+
 #if !os(Linux)
 public final class KVOObserver<Type, ValueType>: Observable<(new: ValueType, old: ValueType?)> {
     private enum Errors: Error {
