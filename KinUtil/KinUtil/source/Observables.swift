@@ -60,6 +60,36 @@ public final class NotificationObserver: Observable<Notification> {
     }
 }
 
+public final class DebouncingObservable<Value>: Observable<Value> {
+    let delay: TimeInterval
+
+    var workItem: DispatchWorkItem?
+
+    let queue = DispatchQueue.global()
+
+    init(delay: TimeInterval) {
+        self.delay = delay
+
+        super.init()
+    }
+
+    override public func next(_ value: Value) {
+        self.workItem?.cancel()
+
+        let next = super.next
+        let workItem = DispatchWorkItem(block: { [weak self] in
+            if self?.workItem?.isCancelled == false {
+                next(value)
+            }
+        })
+
+        self.workItem = workItem
+
+        queue.asyncAfter(deadline: .now() + delay,
+                         execute: workItem)
+    }
+}
+
 #if !os(Linux)
 public final class KVOObserver<Type, ValueType>: Observable<(new: ValueType, old: ValueType?)> {
     private enum Errors: Error {

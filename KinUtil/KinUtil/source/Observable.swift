@@ -454,4 +454,13 @@ extension Observable {
 
         return observable
     }
+
+    public func debounce(delay: TimeInterval) -> DebouncingObservable<Value> {
+        let observable = DebouncingObservable<Value>(delay: delay)
+        let wb = WeakBox(observable: observable)
+
+        observable.parent = self.on(next: { wb.observable?.next($0) })
+
+        return observable
+    }
 }
