@@ -185,7 +185,7 @@ extension Promise {
 extension Promise {
     private func run(_ block: @escaping () -> (), on queue: DispatchQueue?) {
         if let queue = queue {
-            queue.async { block() }
+            queue.async(execute: block)
         }
         else {
             block()
@@ -212,7 +212,7 @@ public func attempt<T>(retryIntervals: [TimeInterval], closure: @escaping (Int) 
 
     var attempt2 = {}
 
-    let attempt1 = {
+    func attempt() {
         attempts += 1
 
         do {
@@ -223,7 +223,7 @@ public func attempt<T>(retryIntervals: [TimeInterval], closure: @escaping (Int) 
                 .error({
                     if attempts < tries {
                         DispatchQueue.global().asyncAfter(deadline: .now() + retryIntervals[attempts - 1]) {
-                            attempt2()
+                            attempt()
                         }
 
                         return
@@ -237,32 +237,7 @@ public func attempt<T>(retryIntervals: [TimeInterval], closure: @escaping (Int) 
         }
     }
 
-    attempt2 = {
-        attempts += 1
-
-        do {
-            try closure(attempts)
-                .then({
-                    p.signal($0)
-                })
-                .error({
-                    if attempts < tries {
-                        DispatchQueue.global().asyncAfter(deadline: .now() + retryIntervals[attempts - 1]) {
-                            attempt1()
-                        }
-
-                        return
-                    }
-
-                    p.signal($0)
-                })
-        }
-        catch {
-            p.signal(error)
-        }
-    }
-
-    attempt1()
+    attempt()
 
     return p
 }
