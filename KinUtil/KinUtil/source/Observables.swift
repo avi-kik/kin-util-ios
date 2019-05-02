@@ -38,10 +38,10 @@ public final class StatefulObservable<Value>: Observable<Value> {
 public final class NotificationObserver: Observable<Notification> {
     private var token: NSObjectProtocol
 
-    init(name: Notification.Name,
-         object: Any? = nil,
-         center: NotificationCenter = .default,
-         queue: OperationQueue? = nil)
+    public init(name: Notification.Name,
+                object: Any? = nil,
+                center: NotificationCenter = .default,
+                queue: OperationQueue? = nil)
     {
         token = NSObject()
 
@@ -147,7 +147,9 @@ public final class KVOObserver<Type, ValueType>: Observable<(new: ValueType, old
 
     private let keyPath: String
 
-    init(object: NSObject, keyPath: WritableKeyPath<Type, ValueType>, options: NSKeyValueObservingOptions = [.new]) throws {
+    public init(object: NSObject, keyPath: WritableKeyPath<Type, ValueType>,
+                options: NSKeyValueObservingOptions = [.new]) throws
+    {
         guard let stringPath = keyPath._kvcKeyPathString else {
             throw Errors.invalidKeyPath
         }
