@@ -26,9 +26,40 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      codeCoverageEnabled = "YES"
       shouldUseLaunchSchemeArgsEnv = "YES">
+      <CodeCoverageTargets>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "82F2FA96204309E500E754BD"
+            BuildableName = "KinUtil.framework"
+            BlueprintName = "KinUtil"
+            ReferencedContainer = "container:KinUtil.xcodeproj">
+         </BuildableReference>
+      </CodeCoverageTargets>
       <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES"
+            testExecutionOrdering = "random">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "82F2FA9F204309E500E754BD"
+               BuildableName = "KinUtilTests.xctest"
+               BlueprintName = "KinUtilTests"
+               ReferencedContainer = "container:KinUtil.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "82F2FA96204309E500E754BD"
+            BuildableName = "KinUtil.framework"
+            BlueprintName = "KinUtil"
+            ReferencedContainer = "container:KinUtil.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>

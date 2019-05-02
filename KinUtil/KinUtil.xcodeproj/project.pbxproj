@@ -42,7 +42,6 @@
 		8261EF3520446117001848CB /* String+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+extensions.swift"; sourceTree = "<group>"; };
 		8261EF372044623F001848CB /* Sequences+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sequences+extensions.swift"; sourceTree = "<group>"; };
 		82870754219753550031229D /* Miscellaneous+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Miscellaneous+extensions.swift"; sourceTree = "<group>"; };
-		82BA2041204D84AB00396AE2 /* KinUtil-macos-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "KinUtil-macos-Info.plist"; path = "/Users/avi/Projects/kin-core-ios/KinSDK/StellarKit/kin-util-ios/KinUtil/KinUtil-macos-Info.plist"; sourceTree = "<absolute>"; };
 		82C07AD6223BF7D100AC90BC /* Base32.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base32.swift; sourceTree = "<group>"; };
 		82F2FA97204309E500E754BD /* KinUtil.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KinUtil.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		82F2FA9A204309E500E754BD /* KinUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KinUtil.h; sourceTree = "<group>"; };
@@ -89,7 +88,6 @@
 				82F2FA99204309E500E754BD /* KinUtil */,
 				82F2FAA4204309E500E754BD /* KinUtilTests */,
 				82F2FA98204309E500E754BD /* Products */,
-				82BA2041204D84AB00396AE2 /* KinUtil-macos-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -455,7 +453,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Z37J743B3H;
+				DEVELOPMENT_TEAM = 4VM2T2M2T8;
 				INFOPLIST_FILE = KinUtilTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.kinfoundation.KinUtilTests;
@@ -470,7 +468,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Z37J743B3H;
+				DEVELOPMENT_TEAM = 4VM2T2M2T8;
 				INFOPLIST_FILE = KinUtilTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.kinfoundation.KinUtilTests;

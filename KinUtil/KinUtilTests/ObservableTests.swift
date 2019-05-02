@@ -14,7 +14,7 @@ class ObservableTests: XCTestCase {
     func test_next_before_observe() {
         let e = expectation(description: "")
 
-        let o = SourceObservable<Int>()
+        let o = Observable<Int>()
 
         o.next(3)
 
@@ -29,7 +29,7 @@ class ObservableTests: XCTestCase {
     func test_next_after_observe() {
         let e = expectation(description: "")
 
-        let o = SourceObservable<Int>()
+        let o = Observable<Int>()
 
         o.on(next: {
             XCTAssertEqual($0, 3)
@@ -44,7 +44,7 @@ class ObservableTests: XCTestCase {
     func test_pre_observer_buffering() {
         let e = expectation(description: "")
 
-        let o = SourceObservable<Int>()
+        let o = Observable<Int>()
 
         o.next(3)
         o.next(2)
@@ -63,7 +63,7 @@ class ObservableTests: XCTestCase {
     func test_accumulate() {
         let e = expectation(description: "")
 
-        let o = SourceObservable<Int>()
+        let o = Observable<Int>()
         let p = o.accumulate(limit: 3)
 
         o.next(3)
@@ -85,7 +85,7 @@ class ObservableTests: XCTestCase {
     func test_accumulate_overflow() {
         let e = expectation(description: "")
 
-        let o = SourceObservable<Int>()
+        let o = Observable<Int>()
         let p = o.accumulate(limit: 3)
 
         o.next(4)
@@ -108,8 +108,8 @@ class ObservableTests: XCTestCase {
     func test_combine_other_signal_primary() {
         let e = expectation(description: "")
 
-        let o = SourceObservable<Int>()
-        let p = SourceObservable<String>()
+        let o = Observable<Int>()
+        let p = Observable<String>()
         let q = o.combine(with: p)
 
         o.next(3)
@@ -127,8 +127,8 @@ class ObservableTests: XCTestCase {
     func test_combine_other_signal_other() {
         let e = expectation(description: "")
 
-        let o = SourceObservable<Int>()
-        let p = SourceObservable<String>()
+        let o = Observable<Int>()
+        let p = Observable<String>()
         let q = o.combine(with: p)
 
         p.next("3")
@@ -146,8 +146,8 @@ class ObservableTests: XCTestCase {
     func test_combine_other_signal_both() {
         let e = expectation(description: "")
 
-        let o = SourceObservable<Int>()
-        let p = SourceObservable<String>()
+        let o = Observable<Int>()
+        let p = Observable<String>()
         let q = o.combine(with: p)
 
         o.next(3)
@@ -171,9 +171,9 @@ class ObservableTests: XCTestCase {
     func test_combine_same_signal_primary() {
         let e = expectation(description: "")
 
-        let o = SourceObservable<Int>()
-        let p = SourceObservable<Int>()
-        let q = SourceObservable<Int>()
+        let o = Observable<Int>()
+        let p = Observable<Int>()
+        let q = Observable<Int>()
         let r = o.combine(with: p, q)
 
         o.next(3)
@@ -192,9 +192,9 @@ class ObservableTests: XCTestCase {
     func test_combine_same_signal_other() {
         let e = expectation(description: "")
 
-        let o = SourceObservable<Int>()
-        let p = SourceObservable<Int>()
-        let q = SourceObservable<Int>()
+        let o = Observable<Int>()
+        let p = Observable<Int>()
+        let q = Observable<Int>()
         let r = o.combine(with: p, q)
 
         p.next(3)
@@ -213,9 +213,9 @@ class ObservableTests: XCTestCase {
     func test_combine_same_signal_all() {
         let e = expectation(description: "")
 
-        let o = SourceObservable<Int>()
-        let p = SourceObservable<Int>()
-        let q = SourceObservable<Int>()
+        let o = Observable<Int>()
+        let p = Observable<Int>()
+        let q = Observable<Int>()
         let r = o.combine(with: p, q)
 
         o.next(3)
@@ -241,7 +241,7 @@ class ObservableTests: XCTestCase {
     func test_filter() {
         let e = expectation(description: "")
 
-        let o = SourceObservable<Int>()
+        let o = Observable<Int>()
         let p = o.filter({ $0 % 2 == 0 })
 
         o.next(3)
@@ -258,7 +258,7 @@ class ObservableTests: XCTestCase {
     func test_compact_map() {
         let e = expectation(description: "")
 
-        let o = SourceObservable<Int>()
+        let o = Observable<Int>()
         let p = o.compactMap({ $0 % 2 == 0 ? String($0) : nil })
 
         o.next(3)
@@ -275,7 +275,7 @@ class ObservableTests: XCTestCase {
     func test_map() {
         let e = expectation(description: "")
 
-        let o = SourceObservable<Int>()
+        let o = Observable<Int>()
         let p = o.map({ String($0) })
 
         o.next(3)
@@ -291,7 +291,7 @@ class ObservableTests: XCTestCase {
     func test_skip() {
         let e = expectation(description: "")
 
-        let o = SourceObservable<Int>()
+        let o = Observable<Int>()
         let p = o.skip(2)
 
         o.next(3)
