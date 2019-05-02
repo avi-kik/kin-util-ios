@@ -41,10 +41,10 @@ public final class LinkBag {
 }
 
 private struct WeakBox<Value> {
-    weak var observable: _ROObservable<Value>?
+    weak var observable: Observer<Value>?
 }
 
-private struct Observer<Value> {
+private struct _Observer<Value> {
     private var nextHandler: ((Value) -> Void)?
     private var errorHandler: ((Error) -> Void)?
     private var finishHandler: (() -> Void)?
@@ -82,14 +82,14 @@ private struct Observer<Value> {
     }
 }
 
-public class _ROObservable<Value> {
+public class Observer<Value> {
     fileprivate enum State {
         case open
         case complete
         case error
     }
 
-    fileprivate var observers = [Observer<Value>]()
+    fileprivate var observers = [_Observer<Value>]()
     internal var buffer = [Value]()
     fileprivate var state = State.open
     fileprivate var parent: UnlinkableObserver?
@@ -107,8 +107,8 @@ public class _ROObservable<Value> {
      - returns: the receiver.
      */
     @discardableResult
-    public func on(queue: DispatchQueue? = nil, next: @escaping (Value) -> Void) -> _ROObservable<Value> {
-        observers.append(Observer(next: next, queue: queue))
+    public func on(queue: DispatchQueue? = nil, next: @escaping (Value) -> Void) -> Observer<Value> {
+        observers.append(_Observer(next: next, queue: queue))
 
         if buffer.count > 0 {
             buffer.forEach { value in
@@ -121,15 +121,15 @@ public class _ROObservable<Value> {
     }
 
     @discardableResult
-    public func on(queue: DispatchQueue? = nil, error: @escaping (Error) -> Void) -> _ROObservable<Value> {
-        observers.append(Observer(error: error, queue: queue))
+    public func on(queue: DispatchQueue? = nil, error: @escaping (Error) -> Void) -> Observer<Value> {
+        observers.append(_Observer(error: error, queue: queue))
 
         return self
     }
 
     @discardableResult
-    public func on(queue: DispatchQueue? = nil, finish: @escaping () -> Void) -> _ROObservable<Value> {
-        observers.append(Observer(finish: finish, queue: queue))
+    public func on(queue: DispatchQueue? = nil, finish: @escaping () -> Void) -> Observer<Value> {
+        observers.append(_Observer(finish: finish, queue: queue))
 
         return self
     }
@@ -190,7 +190,7 @@ public class _ROObservable<Value> {
  `Observable`s only keep a strong reference to the `Observable` instance they
  are observing.  It is thus necessary to keep a strong reference to the last link in an observation chain.
  */
-public class Observable<Value>: _ROObservable<Value> {
+public class Observable<Value>: Observer<Value> {
     /**
      Emit a new value to observers.  If no observers are registered, the value is buffered.
 
@@ -219,7 +219,7 @@ public class Observable<Value>: _ROObservable<Value> {
 
 //MARK: - UnlinkableObserver -
 
-extension _ROObservable: UnlinkableObserver {
+extension Observer: UnlinkableObserver {
     public func unlink() {
         if parent?.observerCount ?? 0 < 2 {
             parent?.unlink()
@@ -235,15 +235,15 @@ extension _ROObservable: UnlinkableObserver {
 
 //MARK: - Operators -
 
-extension _ROObservable {
+extension Observer {
     /**
      The `accumulate` operator gathers received values into a buffer, and emits the buffer as a single value.
 
      - parameter limit: The number of values accumulated is limited to this value.  When the limit is reached,
      the oldest values are discarded as new values are received.
      */
-    public func accumulate(limit: Int) -> _ROObservable<[Value]> {
-        let observable = _ROObservable<[Value]>()
+    public func accumulate(limit: Int) -> Observer<[Value]> {
+        let observable = Observer<[Value]>()
         let wb = WeakBox(observable: observable)
 
         var buffer = [Value]()
@@ -265,10 +265,10 @@ extension _ROObservable {
 
      - parameter other: The observable whose emitted values will be combined with the receiver's.
      */
-    public func combine<OtherValue>(with other: _ROObservable<OtherValue>)
-        -> _ROObservable<(Value?, OtherValue?)>
+    public func combine<OtherValue>(with other: Observer<OtherValue>)
+        -> Observer<(Value?, OtherValue?)>
     {
-        let observable = _ROObservable<(Value?, OtherValue?)>()
+        let observable = Observer<(Value?, OtherValue?)>()
         let wb = WeakBox(observable: observable)
 
         var myLatest: Value?
@@ -301,8 +301,8 @@ extension _ROObservable {
      - parameter other: The observables whose emitted values will be combined with the receiver's.
      The observables' values must of the same type as the receiver.
      */
-    public func combine(with other: _ROObservable<Value> ...) -> _ROObservable<[Value?]> {
-        let observable = _ROObservable<[Value?]>()
+    public func combine(with other: Observer<Value> ...) -> Observer<[Value?]> {
+        let observable = Observer<[Value?]>()
         let wb = WeakBox(observable: observable)
 
         var latest: [Value?] = Array(repeating: nil, count: 1 + other.count)
@@ -328,8 +328,8 @@ extension _ROObservable {
         return observable
     }
 
-    public func debug(_ identifier: String? = nil) -> _ROObservable<Value> {
-        let observable = _ROObservable<Value>()
+    public func debug(_ identifier: String? = nil) -> Observer<Value> {
+        let observable = Observer<Value>()
         let wb = WeakBox(observable: observable)
 
         observable.parent =
@@ -348,8 +348,8 @@ extension _ROObservable {
 
      - parameter handler: The closure whose return value determines if the value will be emitted.
      */
-    public func filter(_ handler: @escaping (Value) -> Bool) -> _ROObservable<Value> {
-        let observable = _ROObservable<Value>()
+    public func filter(_ handler: @escaping (Value) -> Bool) -> Observer<Value> {
+        let observable = Observer<Value>()
         let wb = WeakBox(observable: observable)
 
         observable.parent =
@@ -366,8 +366,8 @@ extension _ROObservable {
 
      - parameter handler: The closure whose return value is emitted to observers.
      */
-    public func compactMap<NewValue>(_ handler: @escaping (Value) -> NewValue?) -> _ROObservable<NewValue> {
-        let observable = _ROObservable<NewValue>()
+    public func compactMap<NewValue>(_ handler: @escaping (Value) -> NewValue?) -> Observer<NewValue> {
+        let observable = Observer<NewValue>()
         let wb = WeakBox(observable: observable)
 
         observable.parent =
@@ -386,8 +386,8 @@ extension _ROObservable {
 
      - parameter handler: The closure whose return value is emitted to observers.
      */
-    public func map<NewValue>(_ handler: @escaping (Value) -> NewValue) -> _ROObservable<NewValue> {
-        let observable = _ROObservable<NewValue>()
+    public func map<NewValue>(_ handler: @escaping (Value) -> NewValue) -> Observer<NewValue> {
+        let observable = Observer<NewValue>()
         let wb = WeakBox(observable: observable)
 
         observable.parent = on(next: { wb.observable?.next(handler($0)) })
@@ -400,8 +400,8 @@ extension _ROObservable {
 
      - parameter count: The number of events to swallow before emitting values.
      */
-    public func skip(_ count: Int) -> _ROObservable<Value> {
-        let observable = _ROObservable<Value>()
+    public func skip(_ count: Int) -> Observer<Value> {
+        let observable = Observer<Value>()
         let wb = WeakBox(observable: observable)
 
         var skipCount = count
@@ -448,14 +448,10 @@ extension _ROObservable {
     }
 
     /**
-     This method returns an observable which cannot be used to emit events to
-     its chain of observers.
-
-     - returns: A read-only observable which passes through all events of its
-     parent.
+     This method returns an `Observer` which emits events sent to the receiver.
      */
-    public func readonly() -> _ROObservable<Value> {
-        let observable = _ROObservable<Value>()
+    public func observer() -> Observer<Value> {
+        let observable = Observer<Value>()
         let wb = WeakBox(observable: observable)
 
         observable.parent = self.on(next: { wb.observable?.next($0) })

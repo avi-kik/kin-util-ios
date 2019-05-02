@@ -9,13 +9,13 @@
 import Foundation
 import Dispatch
 
-public final class StatefulObservable<Value>: _ROObservable<Value> {
+public final class StatefulObservable<Value>: Observer<Value> {
     public private(set) var value: Value?
     
     @discardableResult
     override public func on(queue: DispatchQueue? = nil,
                             next: @escaping (Value) -> Void)
-        -> _ROObservable<Value>
+        -> Observer<Value>
     {
         let wasZero = buffer.isEmpty
         
@@ -35,7 +35,7 @@ public final class StatefulObservable<Value>: _ROObservable<Value> {
     }
 }
 
-public final class NotificationObserver: _ROObservable<Notification> {
+public final class NotificationObserver: Observer<Notification> {
     private var token: NSObjectProtocol
     
     public init(name: Notification.Name,
@@ -60,7 +60,7 @@ public final class NotificationObserver: _ROObservable<Notification> {
     }
 }
 
-public final class DebouncingObservable<Value>: _ROObservable<Value> {
+public final class DebouncingObservable<Value>: Observer<Value> {
     let delay: TimeInterval
     
     var workItem: DispatchWorkItem?
@@ -92,7 +92,7 @@ public final class DebouncingObservable<Value>: _ROObservable<Value> {
 #if os(iOS)
 import UIKit
 
-public final class ActionObserver<T: UIControl>: _ROObservable<T> {
+public final class ActionObserver<T: UIControl>: Observer<T> {
     public init(source: T, event: UIControl.Event) {
         super.init()
         
@@ -108,7 +108,7 @@ public final class ActionObserver<T: UIControl>: _ROObservable<T> {
 #endif
 
 #if !os(Linux)
-public final class KVOObserver<Type, ValueType>: _ROObservable<(new: ValueType, old: ValueType?)> {
+public final class KVOObserver<Type, ValueType>: Observer<(new: ValueType, old: ValueType?)> {
     private enum Errors: Error {
         case invalidKeyPath
     }
