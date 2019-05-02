@@ -82,6 +82,28 @@ private struct Observer<Value> {
     }
 }
 
+/**
+ An `Observable` is an object which emits events (values) to its observers.  The creator of the
+ observable issues calls to `next(_:)` to emit new values.  Values submitted are not emitted until
+ the first observer registers.  Subsequent observers will only see new events.
+ ---
+ ## Read-only and writeable Observables
+ To create an observable to which events can be sent, use `SourceObservable`.  To
+ allow potential observers to observe without the ability to send events, expose the result
+ of the `readonly()` method.
+
+ ## Observing
+ An interested party begins observing by calling `on(_, next:)`.  This method returns an observable
+ which emits the same value received by the next-event handler.  This allows chaining observables.
+
+ ## Operators
+ `Observable`s have several operators, which filter or transform the received value,
+ as dictated by the operator.  The operator methods return an observable, to allow operators to be chained.
+
+ ## Memory management
+ `Observable`s only keep a strong reference to the `Observable` instance they
+ are observing.  It is thus necessary to keep a strong reference to the last link in an observation chain.
+ */
 public class Observable<Value> {
     fileprivate enum State {
         case open
@@ -169,21 +191,12 @@ public class Observable<Value> {
 }
 
 /**
- An `Observable` is an object which emits events (values) to its observers.  The one who creates the
- observable issues calls to `next(_:)` to emit new values.  Values submitted are not emitted until
- the first observer registers.  Subsequent observers will only see new events.
+ `SourceObservable` is an `Observable` subclass which exposes methods for sending
+ events to observers.
+
  ---
- ## Observing
- An interested party begins observing by calling `on(_, next:)`.  This method returns an observable
- which emits the same value received by the next-event handler.  This allows chaining observables.
-
- ## Operators
- `Observable`s have several operators, which filter or transform the received value,
- as dictated by the operator.  The operator methods return an observable, to allow operators to be chained.
-
- ## Memory management
- `Observable`s only keep a strong reference to the `Observable` instance they
- are observing.  It is thus necessary to keep a strong reference to the last link in an observation chain.
+ Event emitters should use instances of this class, while only exposing the
+ result of the `readonly()` method to potential observers.
  */
 public class SourceObservable<Value>: Observable<Value> {
     /**
@@ -417,8 +430,24 @@ extension Observable {
 
      - returns: An `Observable` which will retain the most-recently emitted value.
      */
-    public func stateful() -> StatefulObserver<Value> {
-        let observable = StatefulObserver<Value>()
+    public func stateful() -> StatefulObservable<Value> {
+        let observable = StatefulObservable<Value>()
+        let wb = WeakBox(observable: observable)
+
+        observable.parent = self.on(next: { wb.observable?.next($0) })
+
+        return observable
+    }
+
+    /**
+     This method returns an observable which cannot be used to emit events to
+     its chain of observers.
+
+     - returns: A read-only observable which passes through all events of its
+     parent.
+     */
+    public func readonly() -> Observable<Value> {
+        let observable = Observable<Value>()
         let wb = WeakBox(observable: observable)
 
         observable.parent = self.on(next: { wb.observable?.next($0) })

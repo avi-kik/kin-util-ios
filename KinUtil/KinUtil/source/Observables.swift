@@ -9,7 +9,7 @@
 import Foundation
 import Dispatch
 
-public final class StatefulObserver<Value>: Observable<Value> {
+public final class StatefulObservable<Value>: Observable<Value> {
     public private(set) var value: Value?
 
     @discardableResult
