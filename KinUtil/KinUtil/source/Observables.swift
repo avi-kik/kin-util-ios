@@ -67,7 +67,7 @@ public final class DebouncingObservable<Value>: Observable<Value> {
 
     let queue = DispatchQueue.global()
 
-    init(delay: TimeInterval) {
+    public init(delay: TimeInterval) {
         self.delay = delay
 
         super.init()

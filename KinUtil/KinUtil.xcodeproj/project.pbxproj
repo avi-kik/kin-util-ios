@@ -127,12 +127,12 @@
 			isa = PBXGroup;
 			children = (
 				8261EF34204460B8001848CB /* extensions */,
+				82C07AD6223BF7D100AC90BC /* Base32.swift */,
 				82321F6120526B6500C5D557 /* Curry.swift */,
 				82F2FAB320430A4600E754BD /* Observable.swift */,
+				8251CAB2208E005C00D0EBAA /* Observables.swift */,
 				82F2FAB220430A4600E754BD /* Promise.swift */,
 				82321F5F20518B2300C5D557 /* Utility.swift */,
-				8251CAB2208E005C00D0EBAA /* Observables.swift */,
-				82C07AD6223BF7D100AC90BC /* Base32.swift */,
 			);
 			path = source;
 			sourceTree = "<group>";
