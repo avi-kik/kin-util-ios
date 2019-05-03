@@ -9,6 +9,10 @@
 import XCTest
 @testable import KinUtil
 
+#if os(iOS)
+import UIKit
+#endif
+
 class ObservableTests: XCTestCase {
 
     func test_next_before_observe() {
@@ -306,4 +310,124 @@ class ObservableTests: XCTestCase {
         wait(for: [e], timeout: 1)
     }
 
+    func test_stateful() {
+        let o = Observable<Int>()
+        let p = o.stateful()
+
+        XCTAssertNil(p.value)
+
+        o.next(3)
+
+        XCTAssertEqual(p.value, 3)
+    }
+
+    func test_debounce() {
+        let e = expectation(description: "")
+
+        let o = Observable<Int>()
+        let p = o.debounce(delay: 0.1)
+
+        o.next(3)
+        o.next(2)
+        o.next(1)
+
+        p.on(next: {
+            XCTAssertEqual($0, 1)
+            e.fulfill()
+        })
+
+        wait(for: [e], timeout: 1)
+    }
+
+    func test_debounce_with_delayed_events() {
+        let e = expectation(description: "")
+
+        let o = Observable<Int>()
+        let p = o.debounce(delay: 0.1)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { o.next(3) }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { o.next(2) }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { o.next(1) }
+
+        var eventCounter = 3
+        p.on(next: {
+            XCTAssertEqual($0, eventCounter)
+
+            eventCounter -= 1
+
+            if eventCounter == 0 { e.fulfill() }
+        })
+
+        wait(for: [e], timeout: 1)
+    }
+
+    func test_notification() {
+        let e = expectation(description: "")
+
+        let n = Notification.Name(rawValue: "test")
+        
+        let o = NotificationObserver(name: n)
+
+        NotificationCenter.default.post(Notification(name: n))
+
+        o.on(next: {
+            XCTAssertEqual($0.name.rawValue, "test")
+            e.fulfill()
+        })
+
+        wait(for: [e], timeout: 1)
+    }
 }
+
+#if os(iOS)
+extension ObservableTests {
+    func test_action() {
+        let e = expectation(description: "")
+
+        let c = UIButton(frame: .zero)
+
+        let o = ActionObserver(source: c, event: .touchUpInside)
+
+        c.sendActions(for: .touchUpInside)
+
+        o.on(next: { _ in
+            e.fulfill()
+        })
+
+        wait(for: [e], timeout: 1)
+    }
+}
+#endif
+
+#if !os(Linux)
+extension ObservableTests {
+    @objc var kvoTest: Int {
+        get {
+            return 3
+        }
+
+        set {
+            willChangeValue(for: \.kvoTest)
+            didChangeValue(for: \.kvoTest)
+        }
+    }
+
+    func test_kvo() {
+        let e = expectation(description: "")
+
+        let o = try! KVOObserver(object: self, keyPath: \ObservableTests.kvoTest)
+        kvoTest = 7
+
+        var eventCounter = 2
+        o.on(next: {
+            XCTAssertEqual($0.new, self.kvoTest)
+
+            eventCounter -= 1
+
+            if eventCounter == 0 { e.fulfill() }
+        })
+
+        wait(for: [e], timeout: 1)
+    }
+}
+#endif
