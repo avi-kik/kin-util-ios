@@ -64,6 +64,75 @@ class ObservableTests: XCTestCase {
         wait(for: [e], timeout: 1)
     }
 
+    struct E: Error { }
+
+    func test_error() {
+        let e = expectation(description: "")
+
+        let o = Observable<Int>()
+
+        o.on(error: { _ in e.fulfill() })
+
+        o.error(E())
+        
+        var didExecute = false
+        o.on(next: { _ in didExecute = true })
+        o.next(3)
+
+        XCTAssertFalse(didExecute)
+
+        wait(for: [e], timeout: 1)
+    }
+
+    func test_finish() {
+        let e = expectation(description: "")
+
+        let o = Observable<Int>()
+
+        o.on(finish: { e.fulfill() })
+
+        o.finish()
+
+        var didExecute = false
+        o.on(next: { _ in didExecute = true })
+        o.next(3)
+
+        XCTAssertFalse(didExecute)
+
+        wait(for: [e], timeout: 1)
+    }
+
+    func test_linkbag() {
+        let lb = LinkBag()
+
+        let o = Observable<Int>()
+
+        o.on(finish: { })
+            .add(to: lb)
+
+        o.finish()
+
+        XCTAssertFalse(lb.links.isEmpty)
+
+        lb.clear()
+
+        XCTAssertTrue(lb.links.isEmpty)
+    }
+
+    func test_unlink() {
+        let lb = LinkBag()
+
+        Observable<Int>()
+            .on(finish: { })
+            .add(to: lb)
+
+        XCTAssertFalse(lb.links.isEmpty)
+
+        lb.clear()
+
+        XCTAssertTrue(lb.links.isEmpty)
+    }
+
     func test_accumulate() {
         let e = expectation(description: "")
 
@@ -242,6 +311,22 @@ class ObservableTests: XCTestCase {
         wait(for: [e], timeout: 1)
     }
 
+    func test_debug() {
+        let e = expectation(description: "")
+
+        let o = Observable<Int>()
+        let p = o.debug("debug test")
+
+        o.next(3)
+
+        p.on(next: {
+            XCTAssertEqual($0, 3)
+            e.fulfill()
+        })
+
+        wait(for: [e], timeout: 1)
+    }
+
     func test_filter() {
         let e = expectation(description: "")
 
@@ -318,6 +403,8 @@ class ObservableTests: XCTestCase {
 
         o.next(3)
 
+        p.on(next: { _ in })
+
         XCTAssertEqual(p.value, 3)
     }
 
@@ -361,11 +448,27 @@ class ObservableTests: XCTestCase {
         wait(for: [e], timeout: 1)
     }
 
+    func test_observer() {
+        let e = expectation(description: "")
+
+        let o = Observable<Int>()
+        let p = o.observer()
+
+        o.next(3)
+
+        p.on(next: {
+            XCTAssertEqual($0, 3)
+            e.fulfill()
+        })
+
+        wait(for: [e], timeout: 1)
+    }
+
     func test_notification() {
         let e = expectation(description: "")
 
         let n = Notification.Name(rawValue: "test")
-        
+
         let o = NotificationObserver(name: n)
 
         NotificationCenter.default.post(Notification(name: n))
@@ -402,9 +505,7 @@ extension ObservableTests {
 #if !os(Linux)
 extension ObservableTests {
     @objc var kvoTest: Int {
-        get {
-            return 3
-        }
+        get { return 3 }
 
         set {
             willChangeValue(for: \.kvoTest)

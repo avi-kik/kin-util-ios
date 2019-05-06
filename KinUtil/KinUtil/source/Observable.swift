@@ -20,15 +20,13 @@ private protocol UnlinkableObserver: Unlinkable {
 }
 
 public final class LinkBag {
-    private var links = [Unlinkable]()
+    private(set) internal var links = [Unlinkable]()
 
     public func add(_ unlinkable: Unlinkable) {
         links.append(unlinkable)
     }
 
-    public init() {
-
-    }
+    public init() { }
 
     public func clear() {
         links.forEach { $0.unlink() }

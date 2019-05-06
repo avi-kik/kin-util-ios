@@ -210,8 +210,6 @@ public func attempt<T>(retryIntervals: [TimeInterval], closure: @escaping (Int) 
 
     var attempts = 0
 
-    var attempt2 = {}
-
     func attempt() {
         attempts += 1
 
