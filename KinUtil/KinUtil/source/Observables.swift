@@ -146,7 +146,7 @@ public final class KVOObserver<Type, ValueType>: Observer<(new: ValueType, old: 
     
     private let keyPath: String
     
-    public init(object: NSObject, keyPath: WritableKeyPath<Type, ValueType>,
+    public init(object: NSObject, keyPath: KeyPath<Type, ValueType>,
                 options: NSKeyValueObservingOptions = [.new]) throws
     {
         guard let stringPath = keyPath._kvcKeyPathString else {

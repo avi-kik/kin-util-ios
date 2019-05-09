@@ -8,7 +8,7 @@
 
 /**
  This code copied from [thoughtbot/Curry](https://github.com/thoughtbot/Curry/blob/master/Source/Curry.swift),
- and is release under the MIT License.
+ and is released under the MIT License.
  */
 
 import Foundation
