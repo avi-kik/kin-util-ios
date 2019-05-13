@@ -49,13 +49,14 @@ public enum Base32 {
         var result = [UInt8]()
 
         let string = string.map { $0 }
-        let bytes: [UInt8] = string.map {
+        let bytes: [UInt8] = string.compactMap {
+            guard $0 != "=" else { return nil }
             guard let v = fromTable[$0] else { fatalError("invalid character") }
             return v
         }
 
         let paddingCounts = [0, 1, 3, 4, 6]
-        let paddingCount = bytes.count - (string.firstIndex(of: "=") ?? bytes.count)
+        let paddingCount = string.count - (string.firstIndex(of: "=") ?? bytes.count)
         let paddingIndex = paddingCounts.firstIndex(of: paddingCount)
 
         for i in stride(from: 0, to: bytes.count, by: 8) {

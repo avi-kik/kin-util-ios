@@ -27,8 +27,8 @@ extension FixedWidthInteger {
         precondition(start <= end, "start greater than end")
 
         var mask = 0 as Self
-        for i in start ... end { mask |= 1 << i }
+        for i in start ... end { mask |= 1 &<< i }
 
-        return (self & mask) >> start
+        return (self & mask) &>> start
     }
 }

@@ -25,6 +25,7 @@
 		82F2FAA8204309E500E754BD /* KinUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 82F2FA9A204309E500E754BD /* KinUtil.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		82F2FAB420430A4600E754BD /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F2FAB220430A4600E754BD /* Promise.swift */; };
 		82F2FAB520430A4600E754BD /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F2FAB320430A4600E754BD /* Observable.swift */; };
+		82F41EBA2289F1F20098B4E1 /* Base32Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F41EB92289F1F20098B4E1 /* Base32Tests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +69,7 @@
 		82F2FAA7204309E500E754BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		82F2FAB220430A4600E754BD /* Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
 		82F2FAB320430A4600E754BD /* Observable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
+		82F41EB92289F1F20098B4E1 /* Base32Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base32Tests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +157,7 @@
 				8261EF2A2043DE3B001848CB /* PromiseTests.swift */,
 				82039EA6227A0778002166DF /* ObservableTests.swift */,
 				82F2FAA7204309E500E754BD /* Info.plist */,
+				82F41EB92289F1F20098B4E1 /* Base32Tests.swift */,
 			);
 			path = KinUtilTests;
 			sourceTree = "<group>";
@@ -345,6 +348,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				82F41EBA2289F1F20098B4E1 /* Base32Tests.swift in Sources */,
 				82039EA7227A0778002166DF /* ObservableTests.swift in Sources */,
 				8261EF2B2043DE3B001848CB /* PromiseTests.swift in Sources */,
 			);
