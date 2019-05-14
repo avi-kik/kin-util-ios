@@ -10,34 +10,20 @@ import Foundation
 
 public enum Base32 {
     public static func encode<T: Sequence>(_ data: T) -> String where T.Element == UInt8 {
-        var data = data.map { $0 }
+        var stream = BitStream(data)
 
         var s = [Character]()
 
-        let extraCount = (data.count % 5)
+        let extraCount = stream.byteCount % 5
         let padding = ["", "======", "====", "===", "="][extraCount]
 
-        let count = data.count
-        data += Array(repeating: 0, count: 5 - extraCount)
+        let count = stream.count
+        let limit = count - (count - (count / 5 * 5)) + (count % 5 == 0 ? 0 : 5)
 
-        for i in stride(from: 0, to: count, by: 5) {
-            s.append(toTable[data[i + 0][3, 7]]!)
-            s.append(toTable[data[i + 0][0, 2] << 2 + data[i + 1][6, 7]]!)
+        stream.stream += Array(repeating: 0, count: 5 - extraCount)
 
-            if i + 2 <= count {
-                s.append(toTable[data[i + 1][1, 5]]!)
-                s.append(toTable[data[i + 1][0] << 4 + data[i + 2][4, 7]]!)
-            }
-            if i + 3 <= count {
-                s.append(toTable[data[i + 2][0, 3] << 1 + data[i + 3][7]]!)
-            }
-            if i + 4 <= count {
-                s.append(toTable[data[i + 3][2, 6]]!)
-                s.append(toTable[data[i + 3][0, 1] << 3 + data[i + 4][5, 7]]!)
-            }
-            if i + 5 <= count {
-                s.append(toTable[data[i + 4][0, 4]]!)
-            }
+        for i in stride(from: 0, to: limit, by: 5) {
+            s.append(toTable[stream[i ... i + 4]]!)
         }
 
         return String(s) + padding

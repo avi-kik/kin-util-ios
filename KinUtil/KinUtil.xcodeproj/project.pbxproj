@@ -26,6 +26,7 @@
 		82F2FAB420430A4600E754BD /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F2FAB220430A4600E754BD /* Promise.swift */; };
 		82F2FAB520430A4600E754BD /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F2FAB320430A4600E754BD /* Observable.swift */; };
 		82F41EBA2289F1F20098B4E1 /* Base32Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F41EB92289F1F20098B4E1 /* Base32Tests.swift */; };
+		82F41EBC228A87190098B4E1 /* BitStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F41EBB228A87190098B4E1 /* BitStream.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 		82F2FAB220430A4600E754BD /* Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
 		82F2FAB320430A4600E754BD /* Observable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		82F41EB92289F1F20098B4E1 /* Base32Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base32Tests.swift; sourceTree = "<group>"; };
+		82F41EBB228A87190098B4E1 /* BitStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitStream.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,6 +174,7 @@
 				8251CAB2208E005C00D0EBAA /* Observables.swift */,
 				82F2FAB220430A4600E754BD /* Promise.swift */,
 				82321F5F20518B2300C5D557 /* Utility.swift */,
+				82F41EBB228A87190098B4E1 /* BitStream.swift */,
 			);
 			path = source;
 			sourceTree = "<group>";
@@ -339,6 +342,7 @@
 				82C07AD7223BF7D100AC90BC /* Base32.swift in Sources */,
 				82F2FAB520430A4600E754BD /* Observable.swift in Sources */,
 				8261EF382044623F001848CB /* Sequences+extensions.swift in Sources */,
+				82F41EBC228A87190098B4E1 /* BitStream.swift in Sources */,
 				8261EF3620446117001848CB /* String+extensions.swift in Sources */,
 				82F2FAB420430A4600E754BD /* Promise.swift in Sources */,
 			);
