@@ -17,6 +17,7 @@ public enum Base32 {
         let extraCount = stream.byteCount % 5
         let padding = ["", "======", "====", "===", "="][extraCount]
 
+        // calculate the nearest multiple of 5 which is equal-to-or-greater than count
         let count = stream.count
         let limit = count - (count - (count / 5 * 5)) + (count % 5 == 0 ? 0 : 5)
 
