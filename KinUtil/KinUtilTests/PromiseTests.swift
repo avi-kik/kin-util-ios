@@ -11,6 +11,10 @@ import XCTest
 
 class PromiseTests: XCTestCase {
 
+    override func setUp() {
+        print(Promise<Int>().debugDescription)
+    }
+    
     struct TestError: Error {
         let m: String
 
@@ -563,6 +567,40 @@ class PromiseTests: XCTestCase {
                     e.fulfill()
                 }
             })
+
+        wait(for: [e], timeout: 0.1)
+    }
+
+    func test_success_after_mapped_error() {
+        let e = expectation(description: "")
+
+        let p = Promise<Int>(1)
+
+        p
+            .mapError { _ in return TestError("b") }
+            .then({ _ in
+                e.fulfill()
+            })
+
+        wait(for: [e], timeout: 0.1)
+    }
+
+    func test_signal_success_twice() {
+        let e = expectation(description: "")
+
+        let p = Promise<Int>()
+
+        p
+            .mapError { _ in return TestError("b") }
+            .then({
+                XCTAssertEqual($0, 1)
+            })
+            .finally({
+                e.fulfill()
+            })
+
+        p.signal(1)
+        p.signal(2)
 
         wait(for: [e], timeout: 0.1)
     }

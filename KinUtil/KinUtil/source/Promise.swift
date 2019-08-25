@@ -174,12 +174,6 @@ extension Promise {
 
         return p
     }
-
-    @discardableResult
-    @available(*, deprecated, renamed: "mapError(_:)")
-    public func transformError(_ handler: @escaping (Error) -> (Error)) -> Promise<Value> {
-        return mapError(handler)
-    }
 }
 
 extension Promise {
