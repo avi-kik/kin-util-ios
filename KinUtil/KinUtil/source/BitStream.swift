@@ -9,13 +9,12 @@
 import Foundation
 
 public struct BitStream {
-    var stream: [UInt8]
+    var bytes: [UInt8]
 
-    var count: Int { return stream.count * UInt8.bitWidth }
-    var byteCount: Int { return stream.count }
+    public var count: Int { return bytes.count * UInt8.bitWidth }
 
-    public init<T: Sequence>(_ stream: T) where T.Element == UInt8 {
-        self.stream = stream.array
+    public init<T: Sequence>(_ sequence: T) where T.Element == UInt8 {
+        self.bytes = sequence.array
     }
 }
 
@@ -75,10 +74,20 @@ public extension BitStream {
     }
 
     subscript(start: Int, end: Int) -> UInt8 {
-        precondition(start < UInt8.bitWidth * stream.count, "start out of range")
-        precondition(end < UInt8.bitWidth * stream.count, "end out of range")
+        precondition(start < UInt8.bitWidth * bytes.count, "start out of range")
+        precondition(end < UInt8.bitWidth * bytes.count, "end out of range")
         precondition(start <= end, "start greater than end")
 
-        return byte(from: stream, bits: start ... end)
+        return byte(from: bytes, bits: start ... end)
+    }
+}
+
+extension BitStream: Collection, RandomAccessCollection {
+    public var startIndex: Int {
+        return 0
+    }
+
+    public var endIndex: Int {
+        return count
     }
 }

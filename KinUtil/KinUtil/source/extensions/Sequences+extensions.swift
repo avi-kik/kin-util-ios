@@ -24,6 +24,15 @@ public extension Data {
 
         self = data
     }
+
+    init?(base32Encoded base32String: String) {
+        guard let d = Base32.decode(base32String) else { return nil }
+        self.init(d)
+    }
+
+    func base32EncodedString() -> String {
+        return Base32.encode(self)
+    }
 }
 
 public extension Sequence where Element == UInt8 {

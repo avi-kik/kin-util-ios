@@ -14,14 +14,14 @@ public enum Base32 {
 
         var s = [Character]()
 
-        let extraCount = stream.byteCount % 5
+        let extraCount = stream.bytes.count % 5
         let padding = ["", "======", "====", "===", "="][extraCount]
 
         // calculate the nearest multiple of 5 which is equal-to-or-greater than count
         let count = stream.count
         let limit = count - (count - (count / 5 * 5)) + (count % 5 == 0 ? 0 : 5)
 
-        stream.stream += Array(repeating: 0, count: 5 - extraCount)
+        stream.bytes += Array(repeating: 0, count: 5 - extraCount)
 
         for i in stride(from: 0, to: limit, by: 5) {
             s.append(toTable[stream[i ... i + 4]]!)
@@ -30,16 +30,27 @@ public enum Base32 {
         return String(s) + padding
     }
 
-    public static func decode(_ string: String) -> [UInt8] {
-        precondition(string.count % 8 == 0, "string length must be a multiple of 8")
+    public static func decode(_ string: String) -> [UInt8]? {
+        enum E: Error { case invalidChar }
+
+        guard string.count % 8 == 0 else { return nil }
 
         var result = [UInt8]()
 
-        let string = string.map { $0 }
-        let bytes: [UInt8] = string.compactMap {
-            guard $0 != "=" else { return nil }
-            guard let v = fromTable[$0] else { fatalError("invalid character") }
-            return v
+        let string = string.uppercased().map { $0 }
+        let bytes: [UInt8]
+
+        do {
+            bytes = try string.compactMap {
+                guard $0 != "=" else { return nil }
+
+                guard let v = fromTable[$0] else { throw E.invalidChar }
+
+                return v
+            }
+        }
+        catch {
+            return nil
         }
 
         let paddingCounts = [0, 1, 3, 4, 6]
