@@ -51,4 +51,17 @@ class Base32Tests: XCTestCase {
         XCTAssertEqual(Base32.decode(b), s.utf8.array)
     }
 
+    func test_decode_invalid_length() {
+        let s = "AAAA"
+        let d = Base32.decode(s)
+
+        XCTAssertNil(d)
+    }
+
+    func test_decode_invalid_character() {
+        let s = "88888888"
+        let d = Base32.decode(s)
+
+        XCTAssertNil(d)
+    }
 }

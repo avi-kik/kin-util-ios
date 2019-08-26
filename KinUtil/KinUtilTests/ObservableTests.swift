@@ -560,32 +560,34 @@ extension ObservableTests {
 #endif
 
 #if !os(Linux)
-extension ObservableTests {
-    @objc var kvoTest: Int {
+class KVOTest: NSObject {
+    @objc var test: Int {
         get { return 3 }
 
         set {
-            willChangeValue(for: \.kvoTest)
-            didChangeValue(for: \.kvoTest)
+            willChangeValue(for: \.test)
+            didChangeValue(for: \.test)
         }
     }
+}
 
-    var invalidKvoTest: Int { return 3 }
-
+extension ObservableTests {
     func test_kvo() {
         let e = expectation(description: "")
 
-        let o = try! KVOObserver(object: self, keyPath: \ObservableTests.kvoTest)
-        kvoTest = 7
+        var t: KVOTest? = KVOTest()
+        var o: KVOObserver? = KVOObserver(object: t!, keyPath: \KVOTest.test)
 
-        var eventCounter = 2
-        o.on(next: {
-            XCTAssertEqual($0.new, self.kvoTest)
+        t?.test = 7
 
-            eventCounter -= 1
+        o?.on(next: {
+            XCTAssertEqual($0.new, t?.test)
 
-            if eventCounter == 0 { e.fulfill() }
+            e.fulfill()
         })
+
+        o = nil
+        t = nil
 
         wait(for: [e], timeout: 1)
     }

@@ -147,10 +147,10 @@ public final class KVOObserver<Type, ValueType>: Observer<(new: ValueType, old: 
     private let keyPath: String
     
     public init(object: NSObject, keyPath: KeyPath<Type, ValueType>,
-                options: NSKeyValueObservingOptions = [.new]) throws
+                options: NSKeyValueObservingOptions = [.new])
     {
         guard let stringPath = keyPath._kvcKeyPathString else {
-            throw Errors.invalidKeyPath
+            fatalError("Missing _kvcKeyPathString")
         }
         
         self.observer = Observer()
